@@ -1,34 +1,69 @@
+import Autoloader from "./autoload";
 import Controller from "./controller/controller";
+import Entity from "./entity/entity";
 import UnknownObjectError from "./error/unknownobjecterror";
 
 export default class Registry
 {
-    private _controllers: Array<Object>;
+    private _controllers: Array<Controller>;
+    private _entities: Array<Entity>;
 
     constructor()
     {
-        this._controllers = new Array<Object>();
+        this._controllers = new Array<Controller>();
+        this._entities = new Array<Entity>();
     }
 
-    public import(object: Object)
+    public async import(...paths: string[])
     {
-        if(object.constructor == Controller)
+        const objects = await Autoloader.fromDirectories(...paths);
+
+        for(const object of objects)
         {
-            this.controllers.push(object);
-        }
-        else
-        {
-            throw new UnknownObjectError(object, "Impossible to import unknown object.");
+            try
+            {
+                const objectDefault = object.default;
+                const prototype = objectDefault.prototype;
+        
+                switch (true)
+                {
+                    case prototype instanceof Controller:
+                        this.controllers.push(objectDefault);
+                        break;
+                    
+                    case prototype instanceof Entity:
+                        this.entities.push(objectDefault);
+                        break;
+        
+                    default:
+                        throw new UnknownObjectError(objectDefault, "Impossible to import unknown object.");
+                        break;
+                }
+            }
+            catch(e)
+            {
+                console.error(e);
+            }
         }
     }
 
-    get controllers(): Array<Object>
+    get controllers(): Array<Controller>
     {
         return this._controllers;
     }
 
-    set controllers(controllers: Array<Object>)
+    set controllers(controllers: Array<Controller>)
     {
         this._controllers = controllers;
+    }
+
+    get entities(): Array<Entity>
+    {
+        return this._entities;
+    }
+
+    set entities(entities: Array<Entity>)
+    {
+        this._entities = entities;
     }
 }

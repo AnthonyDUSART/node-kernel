@@ -2,7 +2,7 @@ import * as utils from "./utils/file";
 
 export default class Autoloader
 {
-    public static async fromDirectories(...directories: string[])
+    public static async fromDirectories(...directories: string[]): Promise<any>
     {
         const exports = new Array<Object>();
         const paths = await utils.getFilePathOfDirectories(directories);

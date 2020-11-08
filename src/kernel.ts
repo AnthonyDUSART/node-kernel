@@ -1,10 +1,6 @@
-
-import Autoloader from './autoload';
-import Controller from './controller/controller';
 import KernelError from './error/kernelerror';
-import UnknownObjectError from './error/unknownobjecterror';
 import Registry from './registry';
-
+import * as project from "./config/project.json";
 
 
 export default class Kernel
@@ -20,20 +16,12 @@ export default class Kernel
 
     public async load(): Promise<void>
     {
-        try
+        for(const path of project.paths)
         {
-            const controllers = await Autoloader.fromDirectories(`${__dirname}/controller`);
-            for(const controller of controllers)
-            {
-                this.registry.import(controller);
-            }
-        }
-        catch(e: any)
-        {
-            console.error(e);
+            await this.registry.import(__dirname + path);
         }
 
-
+        console.log(this.registry);
     }
 
     public boot()

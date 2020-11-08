@@ -6,6 +6,7 @@
   "repository": "git@github.com:AnthonyDUSART/node-kernel.git",
   "author": "AnthonyDUSART <anthony.dusart.pro@gmail.com>",
   "license": "MIT",
+  "type": "module",
   "scripts": {
     "dev": "nodemon src/entry.ts"
   },

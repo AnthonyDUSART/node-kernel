@@ -15,18 +15,22 @@ export default class Kernel
         this._booted = false;
     }
 
-    public async load(): Promise<void>
+    private async load(): Promise<void>
     {
         for(const path of project.paths)
         {
             await this.registry.import(`${process.cwd()}/${path}`);
         }
 
-        for(const entity of this.registry.entities)
+        for(const controller of this.registry.controllers)
         {
-            console.log("###> FIELDS METADATA OF");
-            console.log(entity);
-            console.log(Reflect.getMetadata("fields", entity));
+            const controllerRoute = Reflect.getMetadata("controllerRoute", controller)
+            const routes = Reflect.getMetadata("routes", controller);
+            console.log(controllerRoute);
+            for(const route of routes)
+            {
+                console.log(route);
+            }
         }
     }
 

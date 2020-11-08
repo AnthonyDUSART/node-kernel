@@ -1,4 +1,4 @@
-import * as utils from "@node-kernel/core/src/utils/file";
+import * as utils from "./utils/file";
 
 export default class Autoloader
 {

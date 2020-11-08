@@ -1,6 +1,6 @@
-import KernelError from '@node-kernel/core/src/error/kernelerror';
-import Registry from '@node-kernel/core/src/registry';
-import * as project from "@node-kernel/core/src/config/project.json";
+import KernelError from './error/kernelerror';
+import Registry from './registry';
+import * as project from "./config/project.json";
 
 
 export default class Kernel

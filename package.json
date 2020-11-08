@@ -1,6 +1,6 @@
 {
-  "name": "node-kernel",
-  "version": "1.0.0",
+  "name": "@node-kernel/core",
+  "version": "1.0.1",
   "description": "NodeJS Kernel",
   "main": "index.js",
   "repository": "git@github.com:AnthonyDUSART/node-kernel.git",
@@ -16,6 +16,7 @@
     "typescript": "^4.0.5"
   },
   "dependencies": {
+    "@node-kernel/core": "^1.0.0",
     "autoloader-ts": "^2.2.1",
     "dotenv": "^8.2.0"
   }

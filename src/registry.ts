@@ -1,7 +1,7 @@
-import Autoloader from "./autoload";
-import Controller from "./controller/controller";
-import Entity from "./entity/entity";
-import UnknownObjectError from "./error/unknownobjecterror";
+import Autoloader from "@node-kernel/core/src/autoload";
+import Controller from "@node-kernel/core/src/controller/controller";
+import Entity from "@node-kernel/core/src/entity/entity";
+import UnknownObjectError from "@node-kernel/core/src/error/unknownobjecterror";
 
 export default class Registry
 {

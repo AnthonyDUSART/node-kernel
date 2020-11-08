@@ -1,6 +1,6 @@
 import Autoloader from "./autoload";
-import Controller from "./controller/controller";
-import Entity from "./entity/entity";
+import Controller from "./controller";
+import Entity from "./entity";
 import UnknownObjectError from "./error/unknownobjecterror";
 
 export default class Registry

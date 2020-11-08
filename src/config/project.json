@@ -1,6 +1,6 @@
 {
     "paths": [
-        "/controller",
-        "/entity"
+        "src/controller",
+        "src/entity"
     ]
 }

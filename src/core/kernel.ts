@@ -1,6 +1,7 @@
 import KernelError from './error/kernelerror';
 import Registry from './registry';
-import * as project from "./config/project.json";
+import * as project from "../config/project.json";
+import "reflect-metadata"
 
 
 export default class Kernel
@@ -18,10 +19,15 @@ export default class Kernel
     {
         for(const path of project.paths)
         {
-            await this.registry.import(__dirname + path);
+            await this.registry.import(`${process.cwd()}/${path}`);
         }
 
-        console.log(this.registry);
+        for(const entity of this.registry.entities)
+        {
+            console.log("###> FIELDS METADATA OF");
+            console.log(entity);
+            console.log(Reflect.getMetadata("fields", entity));
+        }
     }
 
     public boot()

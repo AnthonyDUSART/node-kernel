@@ -1,7 +1,3 @@
-import Kernel from "./kernel";
-import Registry from "./registry";
-import Autoloader from "./autoload";
-import Controller from "./controller/controller";
-import Entity from "./entity/entity";
+import Kernel from "./core/kernel";
 
-export {Kernel, Registry, Autoloader, Controller, Entity};
+new Kernel().boot();

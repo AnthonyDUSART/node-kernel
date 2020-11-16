@@ -34,14 +34,14 @@ export default class Kernel
         }
     }
 
-    public boot()
+    public async boot(): Promise<void>
     {
         if(this.booted)
         {
             throw new KernelError("Kernel is already booted.");
         }
 
-        this.load();
+        await this.load();
 
         this.booted = true;
     }

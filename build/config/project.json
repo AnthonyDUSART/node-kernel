@@ -1,0 +1,6 @@
+{
+    "paths": [
+        "build/controller",
+        "build/entity"
+    ]
+}

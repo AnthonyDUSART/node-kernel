@@ -1,6 +1,6 @@
 import Controller from "../core/controller";
 import route from "../core/decorator/route";
-import Response from "../core/response";
+import Response from "../core/http/response/response";
 import Test from "../entity/test";
 
 @route({prefix: "/controller", name: "controller_"})
@@ -10,7 +10,7 @@ export default class TestController extends Controller
     public test(arg1: string, test: Test): Response
     {
 
-        return new Response();
+        return new Response('Bonjour', 204);
     }
 
     @route({prefix: "/hello", name: "hello"})

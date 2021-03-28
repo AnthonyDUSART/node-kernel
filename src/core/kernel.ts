@@ -2,16 +2,19 @@ import KernelError from './error/kernelerror';
 import Registry from './registry';
 import * as project from "../config/project.json";
 import "reflect-metadata"
+import HTTPServer from './http/httpserver';
 
 
 export default class Kernel
 {
     private _registry: Registry;
+    private _httpServer: HTTPServer;
     private _booted = false;
 
     public constructor()
     {
         this._registry = new Registry();
+        this._httpServer = new HTTPServer(8081);
         this._booted = false;
     }
 
@@ -31,6 +34,8 @@ export default class Kernel
             {
                 console.log(route);
             }
+
+            this.httpServer.listen();
         }
     }
 
@@ -54,6 +59,16 @@ export default class Kernel
     set registry(registry: Registry)
     {
         this._registry = registry;
+    }
+
+    get httpServer(): HTTPServer
+    {
+        return this._httpServer;
+    }
+
+    set httpServer(httpServer: HTTPServer)
+    {
+        this._httpServer = httpServer;
     }
 
     get booted(): boolean

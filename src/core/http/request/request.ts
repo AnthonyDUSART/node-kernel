@@ -1,28 +1,22 @@
+import { IncomingHttpHeaders } from 'node:http';
 import { URLSearchParams } from 'url';
+import CookiesInterface from '../../../interface/cookiesinterface';
 
 export default class Request
 {
-    private _method?: string;
+    private _method?: string;                   /* METHOD */
     private _query: URLSearchParams;            /* GET */
-    private _request: any;          /* POST */
-    private _attributes: Array<any>;
-    private _server: any;           /* SERVER */
-    private _files: any;            /* FILES */
-    private _cookies: any;          /* COOKIES */
+    private _request: Object;                   /* POST */
+    private _files: Object;                     /* FILES */
+    private _cookies: CookiesInterface;         /* COOKIES */
+    private _headers: IncomingHttpHeaders;      /* HEADERS */
 
-    private _content?: string;
-    private _headers: Array<any>;
-
-    constructor(query: URLSearchParams = new URLSearchParams(), request: Array<any> = new Array<any>(), attributes: Array<any> = new Array<any>(), cookies: Array<any> = new Array<any>(), files: Array<any> = new Array<any>(), server: Array<any> = new Array<any>(), content?: string)
+    constructor(query: URLSearchParams = new URLSearchParams(), request: Object = new Object(), cookies: CookiesInterface = {}, files: Object = new Object())
     {
         this.query = query;
         this.request = request;
-        this.attributes = attributes;
-        this.server = server;
         this.files = files;
         this.cookies = cookies;
-        this.content = content;
-
     }
 
     get method(): string | undefined
@@ -46,72 +40,42 @@ export default class Request
         this._query = query;
     }
     
-    get request(): any
+    get request(): Object
     {
         return this._request;
     }
     
-    set request(request: any)
+    set request(request: Object)
     {
         this._request = request;
     }
-    
-    get attributes(): Array<any>
-    {
-        return this._attributes;
-    }
 
-    set attributes(attributes: Array<any>)
-    {
-        this._attributes = attributes;
-    }
-
-    get server(): any
-    {
-        return this._server;
-    }
-
-    set server(server: any)
-    {
-        this._server = server;
-    }
-
-    get files(): any
+    get files(): Object
     {
         return this._files;
     }
 
-    set files(files: any)
+    set files(files: Object)
     {
         this._files = files;
     }
 
-    get cookies(): any
+    get cookies(): CookiesInterface
     {
         return this._cookies;
     }
 
-    set cookies(cookies: any)
+    set cookies(cookies: CookiesInterface)
     {
         this._cookies = cookies;
     }
 
-    get content(): string | undefined
-    {
-        return this._content;
-    }
-
-    set content(content: string | undefined)
-    {
-        this._content = content;
-    }
-
-    get headers(): Array<any>
+    get headers(): IncomingHttpHeaders
     {
         return this._headers;
     }
 
-    set headers(headers: Array<any>)
+    set headers(headers: IncomingHttpHeaders)
     {
         this._headers = headers;
     }

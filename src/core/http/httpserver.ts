@@ -2,6 +2,9 @@ import * as http from 'http';
 import {URL} from 'url';
 import * as qs from 'querystring';
 import Request from './request/request';
+import Cookie from './cookie';
+import * as fs from 'fs';
+const formidable = require('formidable');
 
 export default class HTTPServer {
 
@@ -24,48 +27,72 @@ export default class HTTPServer {
             throw new Error('Impossible to parse URL.');
         }
 
+        const request = new Request();
+        const form = formidable();
         const url = new URL(incomingMessage.headers.protocol + '://' + incomingMessage.headers.host + incomingMessage.url);
         
-        let body = '';
-        let post;
+        let buffer = new Array<Uint8Array>();
 
-        incomingMessage.on('data', chunk =>
+        form.parse(incomingMessage, (err: any, fields: any, files: any) =>
         {
-            body += chunk;
+            request.request = fields;
+            request.files = files;
+        });
+
+        incomingMessage.on('data', (chunk: Uint8Array) =>
+        {
+            buffer.push(chunk);
 
             // Too much POST data, kill the connection!
             // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
-            if (body.length > 1e6)
+            if (buffer.length > 1e6)
                 incomingMessage.socket.destroy();
+        });
+
+        incomingMessage.on('error', err =>
+        {
+            console.error(err);
         });
 
         incomingMessage.on('end', () =>
         {
-            let post = qs.parse(body);
-            console.log(post);
+            const body = Buffer.concat(buffer).toString();
+            //const post = qs.parse(body.toString());
+            const cookies = Cookie.parseCookies(incomingMessage.headers.cookie)
+
+            serverResponse.writeHead(200, 'OK', {
+                'Set-Cookie': 'mycookie=test'
+            });
+            serverResponse.end(`
+            <body>
+                <form method="POST" enctype="multipart/form-data">
+                    <input type="text" name="core" value="test">
+                    <input type="text" name="core2" value="test2">
+                    <input type="file" name="core3">
+                    <input type="submit">
+                </form>
+            </body>
+            
+            `);
+
+            request.query = url.searchParams;
+            request.cookies = cookies;
+            request.headers = incomingMessage.headers;
+            request.method = incomingMessage.method;
+            
         });
         
-        serverResponse.writeHead(200, 'OK', []);
-        serverResponse.end(`
-        <body>
-            <form method="POST">
-                <input type="text" name="core" value="test">
-                <input type="submit">
-            </form>
-        </body>
-        
-        `);
-        console.log('\x1b[33m%s\x1b[0m', `${incomingMessage.method} => ${url.pathname} ... ${serverResponse.statusCode}`);
-        console.log(url.searchParams.entries());
-        console.log(body);
-
-        const request = new Request(url.searchParams, post);
+        form.on('end', () =>
+        {
+            console.log(request);
+        });
     }
 
     public listen()
     {
         this.context.listen(this.port);
     }
+
 
     set port(port: number)
     {

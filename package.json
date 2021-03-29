@@ -17,8 +17,10 @@
   },
   "dependencies": {
     "@node-kernel/core": "^1.0.0",
+    "@types/formidable": "^1.2.1",
     "autoloader-ts": "^2.2.1",
     "dotenv": "^8.2.0",
+    "formidable": "^1.2.2",
     "reflect-metadata": "^0.1.13"
   }
 }

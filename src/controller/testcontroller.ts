@@ -1,5 +1,6 @@
 import Controller from "../core/controller";
 import route from "../core/decorator/route";
+import Request from "../core/http/request/request";
 import Response from "../core/http/response/response";
 import Test from "../entity/test";
 
@@ -7,8 +8,12 @@ import Test from "../entity/test";
 export default class TestController extends Controller
 {
     @route({prefix: "/test", name: "test"})
-    public test(arg1: string, test: Test): Response
+    public test(request: Request, nombre: number): Response
     {
+
+        console.log('Ceci est la requête !');
+        console.log(request.pathname);
+        console.log(nombre);
 
         return new Response('Bonjour', 204);
     }

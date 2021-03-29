@@ -7,13 +7,13 @@ import HTTPServer from './http/httpserver';
 
 export default class Kernel
 {
-    private _registry: Registry;
+    private static _registry: Registry;
     private _httpServer: HTTPServer;
     private _booted = false;
 
     public constructor()
     {
-        this._registry = new Registry();
+        Kernel._registry = new Registry();
         this._httpServer = new HTTPServer(8081);
         this._booted = false;
     }
@@ -22,18 +22,18 @@ export default class Kernel
     {
         for(const path of project.paths)
         {
-            await this.registry.import(`${process.cwd()}/${path}`);
+            await Kernel.registry.import(`${process.cwd()}/${path}`);
         }
 
-        for(const controller of this.registry.controllers)
+        for(const controller of Kernel.registry.controllers)
         {
             const controllerRoute = Reflect.getMetadata("controllerRoute", controller)
             const routes = Reflect.getMetadata("routes", controller);
-            console.log(controllerRoute);
-            for(const route of routes)
-            {
-                console.log(route);
-            }
+            // console.log(controllerRoute);
+            // for(const route of routes)
+            // {
+            //     console.log(route);
+            // }
 
             this.httpServer.listen();
         }
@@ -51,14 +51,14 @@ export default class Kernel
         this.booted = true;
     }
 
-    get registry(): Registry
+    static get registry(): Registry
     {
-        return this._registry;
+        return Kernel._registry;
     }
 
-    set registry(registry: Registry)
+    static set registry(registry: Registry)
     {
-        this._registry = registry;
+        Kernel._registry = registry;
     }
 
     get httpServer(): HTTPServer

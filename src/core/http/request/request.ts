@@ -10,6 +10,7 @@ export default class Request
     private _files: Object;                     /* FILES */
     private _cookies: CookiesInterface;         /* COOKIES */
     private _headers: IncomingHttpHeaders;      /* HEADERS */
+    private _pathname: string                   /* PATHNAME */
 
     constructor(query: URLSearchParams = new URLSearchParams(), request: Object = new Object(), cookies: CookiesInterface = {}, files: Object = new Object())
     {
@@ -78,5 +79,15 @@ export default class Request
     set headers(headers: IncomingHttpHeaders)
     {
         this._headers = headers;
+    }
+
+    get pathname(): string
+    {
+        return this._pathname;
+    }
+
+    set pathname(pathname: string)
+    {
+        this._pathname = pathname;
     }
 }

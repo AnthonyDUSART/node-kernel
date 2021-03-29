@@ -4,6 +4,10 @@ import * as qs from 'querystring';
 import Request from './request/request';
 import Cookie from './cookie';
 import * as fs from 'fs';
+import UnknownRouteError from '../error/unknownrouteerror';
+import Registry from '../registry';
+import Kernel from '../kernel';
+import ContainerManager from '../container/containermanager';
 const formidable = require('formidable');
 
 export default class HTTPServer {
@@ -16,11 +20,11 @@ export default class HTTPServer {
         this._port = port;
         this.context = http.createServer((request: http.IncomingMessage, response: http.ServerResponse) =>
         {
-            this.handler(request, response);
+            this.handleRequest(request, response);
         });
     }
 
-    private handler(incomingMessage: http.IncomingMessage, serverResponse: http.ServerResponse)
+    private handleRequest(incomingMessage: http.IncomingMessage, serverResponse: http.ServerResponse)
     {
         if(incomingMessage.url === undefined)
         {
@@ -30,6 +34,7 @@ export default class HTTPServer {
         const request = new Request();
         const form = formidable();
         const url = new URL(incomingMessage.headers.protocol + '://' + incomingMessage.headers.host + incomingMessage.url);
+        request.pathname = incomingMessage.url;
         
         let buffer = new Array<Uint8Array>();
 
@@ -57,7 +62,6 @@ export default class HTTPServer {
         incomingMessage.on('end', () =>
         {
             const body = Buffer.concat(buffer).toString();
-            //const post = qs.parse(body.toString());
             const cookies = Cookie.parseCookies(incomingMessage.headers.cookie)
 
             serverResponse.writeHead(200, 'OK', {
@@ -84,8 +88,52 @@ export default class HTTPServer {
         
         form.on('end', () =>
         {
-            console.log(request);
+            this.handleRoute(request);
         });
+    }
+
+    public handleRoute(request: Request): void
+    {
+        try
+        {
+            const pathname = request.pathname;
+            let findedRoute = null;
+
+            /* Route finder */
+            for(const controller of Kernel.registry.controllers)
+            {
+                const controllerRoute = Reflect.getMetadata("controllerRoute", controller);
+
+                if(!findedRoute)
+                {
+                    for(const route of Reflect.getMetadata("routes", controller))
+                    {
+                        if(pathname == controllerRoute.prefix + route.prefix)
+                        {
+                            findedRoute = route
+                            ContainerManager.invoke(request, controller, route);
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+            
+            if(!findedRoute)
+            {
+                throw new UnknownRouteError(pathname);
+            }
+        }
+        catch(err)
+        {
+            /** 
+             * @TODO : LOGGER 
+             */
+            // console.error(err);
+        }
     }
 
     public listen()

@@ -1,3 +1,4 @@
+import Constructable from "../interface/constructableinterface";
 import Autoloader from "./autoload";
 import Controller from "./controller";
 import Entity from "./entity";
@@ -5,12 +6,12 @@ import UnknownObjectError from "./error/unknownobjecterror";
 
 export default class Registry
 {
-    private _controllers: Array<Controller>;
+    private _controllers: Array<Constructable<Controller>>;
     private _entities: Array<Entity>;
 
     constructor()
     {
-        this._controllers = new Array<Controller>();
+        this._controllers = new Array<Constructable<Controller>>();
         this._entities = new Array<Entity>();
     }
 
@@ -37,7 +38,6 @@ export default class Registry
         
                     default:
                         throw new UnknownObjectError(objectDefault, "Impossible to import unknown object.");
-                        break;
                 }
             }
             catch(e)
@@ -47,12 +47,12 @@ export default class Registry
         }
     }
 
-    get controllers(): Array<Controller>
+    get controllers(): Array<Constructable<Controller>>
     {
         return this._controllers;
     }
 
-    set controllers(controllers: Array<Controller>)
+    set controllers(controllers: Array<Constructable<Controller>>)
     {
         this._controllers = controllers;
     }

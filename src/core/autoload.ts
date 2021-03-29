@@ -6,7 +6,7 @@ export default class Autoloader
     {
         const exports = new Array<Object>();
         const paths = await utils.getFilePathOfDirectories(directories);
-        console.log(paths);
+        // console.log(paths);
         for(const path of paths)
         {
             exports.push(await import(path));

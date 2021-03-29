@@ -2,13 +2,14 @@ import Constructable from "../../interface/constructableinterface";
 import MethodRouteDefintion from "../../interface/methodroutedefinition";
 import Controller from "../controller";
 import Request from "../http/request/request";
+import Response from "../http/response/response";
 import { getParamNames } from "../utils/method";
 import EntityFactory from "./entityfactory";
 
 export default abstract class ContainerManager
 {
 
-    public static invoke(request: Request, controller: any, route: any)
+    public static invoke(request: Request, controller: any, route: any): Response
     {
         const instance = new controller();
         const method = instance[route.propertyKey];
@@ -24,6 +25,6 @@ export default abstract class ContainerManager
             );
         }
 
-        method(...args);
+        return method(...args);
     }
 }

@@ -63,7 +63,7 @@ export default class HTTPServer {
         {
             const body = Buffer.concat(buffer).toString();
 
-            serverResponse.writeHead(200, 'OK', {
+            /*serverResponse.writeHead(200, 'OK', {
                 'Set-Cookie': 'mycookie=test'
             });
             serverResponse.end(`
@@ -76,7 +76,7 @@ export default class HTTPServer {
                 </form>
             </body>
             
-            `);
+            `);*/
 
             
         });
@@ -87,11 +87,11 @@ export default class HTTPServer {
             request.cookies = Cookie.parseCookies(incomingMessage.headers.cookie);
             request.headers = incomingMessage.headers;
             request.method = incomingMessage.method;
-            this.handleRoute(request);
+            this.handleRoute(request, serverResponse);
         });
     }
 
-    public handleRoute(request: Request): void
+    public handleRoute(request: Request, serverResponse: http.ServerResponse): void
     {
         try
         {
@@ -110,7 +110,11 @@ export default class HTTPServer {
                         if(pathname == controllerRoute.prefix + route.prefix)
                         {
                             findedRoute = route
-                            ContainerManager.invoke(request, controller, route);
+                            
+                            const response = ContainerManager.invoke(request, controller, route);
+                            console.log(response);
+                            serverResponse.writeHead(response.status.code, response.status.text, response.headers);
+                            serverResponse.end(response.content);
                             break;
                         }
                     }

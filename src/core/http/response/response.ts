@@ -3,10 +3,10 @@ import StatusInterface from "../../../interface/response/statusinterface";
 export default class Response
 {
     public _headers: Array<any>;
-    protected _content: String;
-    protected _version: String;
+    protected _content: string;
+    protected _version: string;
     protected _status: StatusInterface;
-    protected _charset: String;
+    protected _charset: string;
 
     /* Status codes translation table */
     public static statusInterfaces: Array<StatusInterface> = [
@@ -74,7 +74,7 @@ export default class Response
         {code: 511, text: 'Network Authentication Required'},     // RFC6585
     ];
 
-    constructor(content: String = '', statusCode: number = 200, headers: Array<any> = new Array())
+    constructor(statusCode: number = 200, content: string = '', headers: Array<any> = new Array())
     {
         this.headers = headers;
         this.content = content;
@@ -90,7 +90,7 @@ export default class Response
         return statusCode < 100 || statusCode >= 600;
     }
 
-    public setStatus(statusCode: number, text?: String)
+    public setStatus(statusCode: number, text?: string)
     {
         if(this.isInvalid(statusCode))
         {
@@ -126,22 +126,22 @@ export default class Response
         return this._headers;
     }
 
-    set content(content: String)
+    set content(content: string)
     {
         this._content = content ?? '';
     }
 
-    get content(): String
+    get content(): string
     {
         return this._content;
     }
 
-    set version(version: String)
+    set version(version: string)
     {
         this._version = version;
     }
 
-    get version(): String
+    get version(): string
     {
         return this._version;
     }
@@ -156,12 +156,12 @@ export default class Response
         return this._status
     }
 
-    set charset(charset: String)
+    set charset(charset: string)
     {
         this._charset = charset;
     }
 
-    get charset(): String
+    get charset(): string
     {
         return this._charset;
     }

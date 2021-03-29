@@ -20,6 +20,17 @@ export default class Request
         this.cookies = cookies;
     }
 
+    /**
+     * Return GET element by key
+     * @param key Key of GET element
+     * @param defaultValue Default value
+     * @returns any
+     */
+    public get(key: string, defaultValue: any = null): any
+    {
+        return this.query.get(key) ?? defaultValue;
+    }
+
     get method(): string | undefined
     {
         return this._method;

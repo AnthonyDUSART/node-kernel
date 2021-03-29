@@ -34,7 +34,7 @@ export default class HTTPServer {
         const request = new Request();
         const form = formidable();
         const url = new URL(incomingMessage.headers.protocol + '://' + incomingMessage.headers.host + incomingMessage.url);
-        request.pathname = incomingMessage.url;
+        request.pathname = url.pathname;
         
         let buffer = new Array<Uint8Array>();
 
@@ -62,7 +62,6 @@ export default class HTTPServer {
         incomingMessage.on('end', () =>
         {
             const body = Buffer.concat(buffer).toString();
-            const cookies = Cookie.parseCookies(incomingMessage.headers.cookie)
 
             serverResponse.writeHead(200, 'OK', {
                 'Set-Cookie': 'mycookie=test'
@@ -79,15 +78,15 @@ export default class HTTPServer {
             
             `);
 
-            request.query = url.searchParams;
-            request.cookies = cookies;
-            request.headers = incomingMessage.headers;
-            request.method = incomingMessage.method;
             
         });
         
         form.on('end', () =>
         {
+            request.query = url.searchParams;
+            request.cookies = Cookie.parseCookies(incomingMessage.headers.cookie);
+            request.headers = incomingMessage.headers;
+            request.method = incomingMessage.method;
             this.handleRoute(request);
         });
     }

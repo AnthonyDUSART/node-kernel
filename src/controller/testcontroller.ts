@@ -12,7 +12,7 @@ export default class TestController extends Controller
     {
 
         console.log('Ceci est la requête !');
-        console.log(request.pathname);
+        console.log(request.get('bonsoir'));
         console.log(nombre);
 
         return new Response('Bonjour', 204);

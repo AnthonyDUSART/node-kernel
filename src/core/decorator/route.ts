@@ -1,7 +1,7 @@
 import "reflect-metadata";
-import ArgumentDefinition from "../../interface/argumentdefinition";
-import ControllerRouteDefinition from "../../interface/controllerroutedefinition";
-import MethodRouteDefintion from "../../interface/methodroutedefinition";
+import ArgumentDefinition from "../interface/argumentdefinition";
+import ControllerRouteDefinition from "../interface/controllerroutedefinition";
+import MethodRouteDefintion from "../interface/methodroutedefinition";
 
 const STRIP_COMMENTS = /(\/\/.*$)|(\/\*[\s\S]*?\*\/)|(\s*=[^,\)]*(('(?:\\'|[^'\r\n])*')|("(?:\\"|[^"\r\n])*"))|(\s*=[^,\)]*))/mg;
 const ARGUMENT_NAMES = /([^\s,]+)/g;

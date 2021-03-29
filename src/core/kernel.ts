@@ -29,11 +29,6 @@ export default class Kernel
         {
             const controllerRoute = Reflect.getMetadata("controllerRoute", controller)
             const routes = Reflect.getMetadata("routes", controller);
-            // console.log(controllerRoute);
-            // for(const route of routes)
-            // {
-            //     console.log(route);
-            // }
 
             this.httpServer.listen();
         }

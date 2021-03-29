@@ -1,4 +1,4 @@
-import Constructable from "../interface/constructableinterface";
+import Constructable from "./interface/constructableinterface";
 import Autoloader from "./autoload";
 import Controller from "./controller";
 import Entity from "./entity";

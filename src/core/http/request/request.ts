@@ -1,6 +1,6 @@
 import { IncomingHttpHeaders } from 'node:http';
 import { URLSearchParams } from 'url';
-import CookiesInterface from '../../../interface/cookiesinterface';
+import CookiesInterface from '../../interface/cookiesinterface';
 
 export default class Request
 {

@@ -1,4 +1,4 @@
-import CookiesInterface from "../../interface/cookiesinterface";
+import CookiesInterface from "../interface/cookiesinterface";
 
 export default abstract class Cookie
 {

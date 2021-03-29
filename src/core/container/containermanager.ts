@@ -1,5 +1,5 @@
-import Constructable from "../../interface/constructableinterface";
-import MethodRouteDefintion from "../../interface/methodroutedefinition";
+import Constructable from "../interface/constructableinterface";
+import MethodRouteDefintion from "../interface/methodroutedefinition";
 import Controller from "../controller";
 import Request from "../http/request/request";
 import Response from "../http/response/response";

@@ -1,4 +1,4 @@
-import StatusInterface from "../../../interface/response/statusinterface";
+import StatusInterface from "../../interface/response/statusinterface";
 
 export default class Response
 {

@@ -112,7 +112,6 @@ export default class HTTPServer {
                             findedRoute = route
                             
                             const response = ContainerManager.invoke(request, controller, route);
-                            console.log(response);
                             serverResponse.writeHead(response.status.code, response.status.text, response.headers);
                             serverResponse.end(response.content);
                             break;

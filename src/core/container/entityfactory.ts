@@ -1,5 +1,5 @@
 import Entity from "../entity";
-import Constructable from '../../interface/constructableinterface'
+import Constructable from '../interface/constructableinterface'
 import Request from "../http/request/request";
 
 export default abstract class EntityFactory

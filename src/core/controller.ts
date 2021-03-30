@@ -1,12 +1,13 @@
 import Twig from 'twig';
 import Response from './http/response/response';
+import * as twig_config from '../config/twig.json';
 
 export default abstract class Controller
 {
     public renderFile(path: string, parameters: Object = new Object()): string
     {
         var template = Twig.twig({
-            path: path
+            path: twig_config.templatesPath + path
         });
 
         return template.render(parameters)

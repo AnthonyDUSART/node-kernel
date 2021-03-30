@@ -11,7 +11,7 @@ export default class TestController extends Controller
     @route({prefix: "/test", name: "test"})
     public test(request: Request, nombre: number): Response
     {
-        return this.render('./src/templates/base.html.twig', {
+        return this.render('base.html.twig', {
             nombre: nombre
         });
     }

@@ -8,6 +8,7 @@ import UnknownRouteError from '../error/unknownrouteerror';
 import Registry from '../registry';
 import Kernel from '../kernel';
 import ContainerManager from '../container/containermanager';
+import Response from './response/response';
 const formidable = require('formidable');
 
 export default class HTTPServer {
@@ -135,6 +136,9 @@ export default class HTTPServer {
              * @TODO : LOGGER 
              */
             // console.error(err);
+            const response = new Response(404);
+            serverResponse.writeHead(response.status.code, response.status.text, response.headers);
+            serverResponse.end(response.content);
         }
     }
 

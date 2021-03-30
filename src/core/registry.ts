@@ -3,6 +3,7 @@ import Autoloader from "./autoload";
 import Controller from "./controller";
 import Entity from "./entity";
 import UnknownObjectError from "./error/unknownobjecterror";
+import TestController from "../controller/testcontroller";
 
 export default class Registry
 {

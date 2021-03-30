@@ -92,14 +92,12 @@ export default class HTTPServer {
         });
     }
 
-    public handleRoute(request: Request, serverResponse: http.ServerResponse): void
+    public async handleRoute(request: Request, serverResponse: http.ServerResponse): Promise<void>
     {
         let response: Response = new Response(404);
         const pathname = request.pathname;
         try
         {
-            let findedRoute = null;
-
             /* Route finder */
             for(const controller of Kernel.registry.controllers)
             {
@@ -110,7 +108,7 @@ export default class HTTPServer {
                 {
                     // console.log('\tfinding...');
                     if(pathname == controllerRoute.prefix + route.prefix)
-                    {                            
+                    {
                         // console.log('\tfinded');
                         response = ContainerManager.invoke(request, controller, route);
                         break;

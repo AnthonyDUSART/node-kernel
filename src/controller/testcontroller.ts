@@ -9,19 +9,16 @@ import Test from "../entity/test";
 export default class TestController extends Controller
 {
     @route({prefix: "/test", name: "test"})
-    public test(request: Request, nombre: number): JsonResponse
-    {
-
-        console.log('Ceci est la requête !');
-        console.log(request.get('bonsoir'));
-        console.log(nombre);
-
-        return new JsonResponse(200);
+    public test(request: Request, nombre: number): Response
+    {        
+        return new Response(200, this.renderFile('./src/templates/base.html.twig', {
+            nombre: nombre
+        }));
     }
 
     @route({prefix: "/hello", name: "hello"})
-    public hello(oui: Test): Response
+    public hello()
     {
-        return new Response();
+        console.log(this);
     }
 }

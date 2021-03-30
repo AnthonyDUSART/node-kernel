@@ -94,38 +94,31 @@ export default class HTTPServer {
 
     public handleRoute(request: Request, serverResponse: http.ServerResponse): void
     {
+        let response: Response = new Response(404);
+        const pathname = request.pathname;
         try
         {
-            const pathname = request.pathname;
             let findedRoute = null;
 
             /* Route finder */
             for(const controller of Kernel.registry.controllers)
             {
+                //  console.log('finding...');
                 const controllerRoute = Reflect.getMetadata("controllerRoute", controller);
 
-                if(!findedRoute)
+                for(const route of Reflect.getMetadata("routes", controller))
                 {
-                    for(const route of Reflect.getMetadata("routes", controller))
-                    {
-                        if(pathname == controllerRoute.prefix + route.prefix)
-                        {
-                            findedRoute = route
-                            
-                            const response = ContainerManager.invoke(request, controller, route);
-                            serverResponse.writeHead(response.status.code, response.status.text, response.headers);
-                            serverResponse.end(response.content);
-                            break;
-                        }
+                    // console.log('\tfinding...');
+                    if(pathname == controllerRoute.prefix + route.prefix)
+                    {                            
+                        // console.log('\tfinded');
+                        response = ContainerManager.invoke(request, controller, route);
+                        break;
                     }
-                }
-                else
-                {
-                    break;
                 }
             }
             
-            if(!findedRoute)
+            if(response.status.code == 404)
             {
                 throw new UnknownRouteError(pathname);
             }
@@ -135,8 +128,9 @@ export default class HTTPServer {
             /** 
              * @TODO : LOGGER 
              */
-            // console.error(err);
-            const response = new Response(404);
+        }
+        finally
+        {
             serverResponse.writeHead(response.status.code, response.status.text, response.headers);
             serverResponse.end(response.content);
         }

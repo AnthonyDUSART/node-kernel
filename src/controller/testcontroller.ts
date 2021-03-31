@@ -8,17 +8,18 @@ import Test from "../entity/test";
 @route({prefix: "/controller", name: "controller_"})
 export default class TestController extends Controller
 {
-    @route({prefix: "/test", name: "test"})
-    public test(request: Request, nombre: number): Response
+    @route({prefix: "/test/{nombre}/{caca}", name: "test"})
+    public test(request: Request, nombre: number, caca: string): Response
     {
         return this.render('base.html.twig', {
-            nombre: nombre
+            nombre: nombre,
+            caca: caca
         });
     }
 
     @route({prefix: "/hello", name: "hello"})
     public hello()
     {
-        console.log(this);
+        return new Response(200, 'its ok');
     }
 }

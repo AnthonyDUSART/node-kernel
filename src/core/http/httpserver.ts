@@ -92,7 +92,7 @@ export default class HTTPServer {
         });
     }
 
-    public async handleRoute(request: Request, serverResponse: http.ServerResponse): Promise<void>
+    public handleRoute(request: Request, serverResponse: http.ServerResponse): void
     {
         let response: Response = new Response(404);
         const pathname = request.pathname;
@@ -101,16 +101,25 @@ export default class HTTPServer {
             /* Route finder */
             for(const controller of Kernel.registry.controllers)
             {
-                //  console.log('finding...');
                 const controllerRoute = Reflect.getMetadata("controllerRoute", controller);
 
                 for(const route of Reflect.getMetadata("routes", controller))
                 {
-                    // console.log('\tfinding...');
-                    if(pathname == controllerRoute.prefix + route.prefix)
+                    /* Matching route test */
+                    const finalRoute = (controllerRoute.prefix + route.prefix);
+                    const matches = finalRoute.matchAll(/\{(.*?)\}/g);
+                    let finalReg: String = '^' + finalRoute.split('/').join('\\/');
+                    for(const match of matches)
                     {
-                        // console.log('\tfinded');
-                        response = ContainerManager.invoke(request, controller, route);
+                        finalReg = finalReg.replace(match[0], '(?<' + match[1] + '>.*?[^/]+)');
+                    }
+                    finalReg += '$';
+
+                    if(new RegExp(finalReg.toString()).test(pathname))
+                    {
+                        let data: {[key: string]: any} = pathname.match(finalReg.toString())?.groups ?? {};
+                        data['request'] = request;
+                        response = ContainerManager.invoke(request, controller, route, data);
                         break;
                     }
                 }

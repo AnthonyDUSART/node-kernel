@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import Request from "../http/request/request";
 import ArgumentDefinition from "../interface/argumentdefinition";
 import ControllerRouteDefinition from "../interface/controllerroutedefinition";
 import MethodRouteDefintion from "../interface/methodroutedefinition";
@@ -54,7 +55,7 @@ export default function route(args: any): any
             const params = Reflect.getMetadata('design:paramtypes', target, propertyKey);
             let paramsName = getParamNames(descriptor.value);
             const returnType = Reflect.getMetadata('design:returntype', target, propertyKey);
-    
+
             paramsName.forEach((paramName, k) =>
             {
                 const argument: ArgumentDefinition = {

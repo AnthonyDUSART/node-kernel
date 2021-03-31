@@ -7,10 +7,10 @@ export default abstract class Controller
     public renderFile(path: string, parameters: Object = new Object()): string
     {
         var template = Twig.twig({
-            path: twig_config.templatesPath + path
+            path: twig_config.templatesPath + path,
+            async: false
         });
-
-        return template.render(parameters)
+        return template.render(parameters);
     }
 
     public render(path: string, parameters: Object = new Object()): Response

@@ -95,6 +95,7 @@ export default class HTTPServer {
     public handleRoute(request: Request, serverResponse: http.ServerResponse): void
     {
         let response: Response = new Response(404);
+        let finded: boolean = false;
         const pathname = request.pathname;
         try
         {
@@ -111,17 +112,24 @@ export default class HTTPServer {
                     let finalReg: String = '^' + finalRoute.split('/').join('\\/');
                     for(const match of matches)
                     {
-                        finalReg = finalReg.replace(match[0], '(?<' + match[1] + '>.*?[^/]+)');
+                        finalReg = finalReg.replace(match[0], '(?<' + match[1] + '>[^\/]+)');
                     }
                     finalReg += '$';
 
                     if(new RegExp(finalReg.toString()).test(pathname))
                     {
+                        console.log(finalReg);
                         let data: {[key: string]: any} = pathname.match(finalReg.toString())?.groups ?? {};
                         data['request'] = request;
                         response = ContainerManager.invoke(request, controller, route, data);
+                        finded = true;
                         break;
                     }
+                }
+
+                if(finded)
+                {
+                    break;
                 }
             }
             
@@ -135,6 +143,7 @@ export default class HTTPServer {
             /** 
              * @TODO : LOGGER 
              */
+            //console.log(err);
         }
         finally
         {

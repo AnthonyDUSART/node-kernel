@@ -1,6 +1,7 @@
 import Twig from 'twig';
 import Response from './http/response/response';
 import * as twig_config from '../config/twig.json';
+Twig.cache(false);
 
 export default abstract class Controller
 {

@@ -118,7 +118,6 @@ export default class HTTPServer {
 
                     if(new RegExp(finalReg.toString()).test(pathname))
                     {
-                        console.log(finalReg);
                         let data: {[key: string]: any} = pathname.match(finalReg.toString())?.groups ?? {};
                         data['request'] = request;
                         response = ContainerManager.invoke(request, controller, route, data);

@@ -13,7 +13,8 @@ export default class TestController extends Controller
     {
         return this.render('index.html.twig', {
             nombre: nombre,
-            caca: caca
+            caca: caca,
+            request: request
         });
     }
 

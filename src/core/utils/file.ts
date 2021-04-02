@@ -26,7 +26,7 @@ export async function getFilePathOfDirectories(directories: Array<string>): Prom
 
 export function parseConfigFile(file: string): object
 {
-    const lines = <object>yaml.load(fs.readFileSync(`${process.cwd()}/src/config/${file}`, 'utf8'))
+    const lines = <object>yaml.load(fs.readFileSync(`${process.cwd()}/config/${file}`, 'utf8'))
 
     return parse(lines);
     

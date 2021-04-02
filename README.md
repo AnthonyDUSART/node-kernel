@@ -1,7 +1,5 @@
-# Awesome Project Build with TypeORM
+# NodeKERNEL
 
-Steps to run this project:
+NodeKERNEL is a NodeJS framework that can run an HTTP server with a MVC architecture.
 
-1. Run `npm i` command
-2. Setup database settings inside `ormconfig.json` file
-3. Run `npm start` command
+NodeKERNEL implement natively [Typescript](https://www.typescriptlang.org/), [TypeORM](https://typeorm.io/), [Webpack](https://webpack.js.org/) and [Twig.js](https://github.com/twigjs/twig.js).

@@ -14,7 +14,6 @@ export default abstract class ContainerManager
         try
         {
             const typeorm_config = Kernel.config.get('typeorm');
-            console.log(typeorm_config.url);
             const connection = <Connection>await createConnection({
                 type: typeorm_config.type,
                 url: typeorm_config.url,

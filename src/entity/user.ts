@@ -1,16 +1,16 @@
-import {Entity as E, ObjectID, ObjectIdColumn, Column} from "typeorm";
+import * as ORM from "typeorm";
 import Entity from "../core/entity";
 
-@E()
+@ORM.Entity()
 export default class User extends Entity {
     
-    @ObjectIdColumn()
-    id: ObjectID;
+    @ORM.ObjectIdColumn()
+    id: ORM.ObjectID;
     
-    @Column()
+    @ORM.Column()
     firstName: string;
     
-    @Column()
+    @ORM.Column()
     lastName: string;
     
 }

@@ -117,4 +117,7 @@ dist
 
 # NodeKERNEL
 build/*
+!build/.gitkeep
 public/build/*
+
+!public/build/.gitkeep

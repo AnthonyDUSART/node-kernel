@@ -1,37 +1,49 @@
 import KernelError from './error/kernelerror';
 import Registry from './registry';
-import * as project from "../config/project.json";
 import "reflect-metadata"
 import HTTPServer from './http/httpserver';
+import {parseConfigFile} from "./utils/file";
 
 
 export default class Kernel
 {
     private static _registry: Registry;
+    private static _config: Map<string, any>;
     private _httpServer: HTTPServer;
     private _booted = false;
 
     public constructor()
     {
         Kernel._registry = new Registry();
+        Kernel._config = new Map<string, any>();
         this._httpServer = new HTTPServer(8081);
         this._booted = false;
     }
 
+    private loadConfig()
+    {
+        try
+        {
+            Kernel.config.set('typeorm', parseConfigFile("typeorm.yml"));
+            Kernel.config.set('twig', parseConfigFile("twig.yml"));
+            Kernel.config.set('project', parseConfigFile("project.yml"));
+        }
+        catch(err)
+        {
+            console.error(err);
+        }
+    }
+
     private async load(): Promise<void>
     {
-        for(const path of project.paths)
-        {
-            await Kernel.registry.import(`${process.cwd()}/${path}`);
-        }
+        this.loadConfig();
 
-        for(const controller of Kernel.registry.controllers)
+        for(const [k, v] of Object.entries(Kernel.config.get('project').paths))
         {
-            const controllerRoute = Reflect.getMetadata("controllerRoute", controller)
-            const routes = Reflect.getMetadata("routes", controller);
-
-            this.httpServer.listen();
+            await Kernel.registry.import(`${process.cwd()}/${v}`);
         }
+        
+        this.httpServer.listen();
     }
 
     public async boot(): Promise<void>
@@ -40,7 +52,6 @@ export default class Kernel
         {
             throw new KernelError("Kernel is already booted.");
         }
-
         await this.load();
 
         this.booted = true;
@@ -74,5 +85,10 @@ export default class Kernel
     set booted(booted: boolean)
     {
         this._booted = booted;
+    }
+
+    static get config(): Map<string, any>
+    {
+        return Kernel._config;
     }
 }

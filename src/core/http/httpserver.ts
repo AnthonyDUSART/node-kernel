@@ -92,7 +92,7 @@ export default class HTTPServer {
         });
     }
 
-    public handleRoute(request: Request, serverResponse: http.ServerResponse): void
+    public async handleRoute(request: Request, serverResponse: http.ServerResponse): Promise<void>
     {
         let response: Response = new Response(404);
         let finded: boolean = false;
@@ -119,8 +119,8 @@ export default class HTTPServer {
                     if(new RegExp(finalReg.toString()).test(pathname))
                     {
                         let data: {[key: string]: any} = pathname.match(finalReg.toString())?.groups ?? {};
-                        data['request'] = request;
-                        response = ContainerManager.invoke(request, controller, route, data);
+                        //data['request'] = request;
+                        response = await ContainerManager.invoke(request, controller, route, data);
                         finded = true;
                         break;
                     }

@@ -1,10 +1,11 @@
 import Entity from "../entity";
 import Constructable from '../interface/constructableinterface'
 import Request from "../http/request/request";
+import { Connection, EntityManager } from "typeorm";
 
 export default abstract class EntityFactory
 {
-    public static instantiate(func: any, data: any)
+    public static instantiate(request: Request, connection: Connection, func: any, data: any)
     {
         let instance = new func();
 
@@ -13,7 +14,11 @@ export default abstract class EntityFactory
         }
         else if(instance instanceof Request)
         {
-            instance = data;
+            instance = request;
+        }
+        else if(instance instanceof EntityManager)
+        {
+            instance = connection.createEntityManager();
         }
         else
         {

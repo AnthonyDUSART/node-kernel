@@ -1,0 +1,6 @@
+# MONGODB CONFIGURATION #
+type: mongodb
+url: ${DATABASE_CONNECTION}
+synchronize: true
+logging: false
+useUnifiedTopology: true

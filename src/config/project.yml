@@ -1,0 +1,5 @@
+# PROJECT CONFIGURATION #
+
+paths:
+  - "src/controller"
+  - "src/entity"

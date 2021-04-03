@@ -1,14 +1,16 @@
-import * as http from 'http';
+import http from 'http';
+import path from 'path';
+import mime from "mime-types";
+import qs from 'querystring';
+import fs from 'fs';
 import {URL} from 'url';
-import * as qs from 'querystring';
 import Request from './request/request';
 import Cookie from './cookie';
-import * as fs from 'fs';
 import UnknownRouteError from '../error/unknownrouteerror';
-import Registry from '../registry';
 import Kernel from '../kernel';
 import ContainerManager from '../container/containermanager';
 import Response from './response/response';
+import { isEmpty } from 'lodash';
 const formidable = require('formidable');
 
 export default class HTTPServer {
@@ -35,6 +37,7 @@ export default class HTTPServer {
         const request = new Request();
         const form = formidable();
         const url = new URL(incomingMessage.headers.protocol + '://' + incomingMessage.headers.host + incomingMessage.url);
+        
         request.pathname = url.pathname;
         
         let buffer = new Array<Uint8Array>();
@@ -63,40 +66,72 @@ export default class HTTPServer {
         incomingMessage.on('end', () =>
         {
             const body = Buffer.concat(buffer).toString();
-
-            /*serverResponse.writeHead(200, 'OK', {
-                'Set-Cookie': 'mycookie=test'
-            });
-            serverResponse.end(`
-            <body>
-                <form method="POST" enctype="multipart/form-data">
-                    <input type="text" name="core" value="test">
-                    <input type="text" name="core2" value="test2">
-                    <input type="file" name="core3">
-                    <input type="submit">
-                </form>
-            </body>
-            
-            `);*/
-
-            
         });
         
-        form.on('end', () =>
+        form.on('end', async () =>
         {
             request.query = url.searchParams;
             request.cookies = Cookie.parseCookies(incomingMessage.headers.cookie);
             request.headers = incomingMessage.headers;
             request.method = incomingMessage.method;
-            this.handleRoute(request, serverResponse);
+            let response = await this.handleStatic(request) ?? await this.handleRoute(request);
+
+            if(!response)
+            {
+                response = new Response(404);
+            }
+            serverResponse.writeHead(response.status.code, response.status.text, response.headers);
+            serverResponse.end(response.content);
         });
     }
 
-    public async handleRoute(request: Request, serverResponse: http.ServerResponse): Promise<void>
+    public async handleStatic(request: Request): Promise<Response | void>
     {
-        let response: Response = new Response(404);
+        let response: Response | void;
+        const pathname = request.pathname;
+        const ext = path.extname(pathname);
+        if(!isEmpty(ext))
+        {
+            try
+            {
+                response = await new Promise((resolve, reject) =>
+                {
+                    fs.access(`${process.cwd()}/public/build${pathname}`, exists =>
+                    {
+                        fs.readFile(`${process.cwd()}/public/build${pathname}`, (err, data) =>
+                        {
+                            if(err)
+                            {
+                                reject(
+                                    new Response(500, `Error getting the file: ${err}.`)
+                                );
+                            }
+                            else {
+                                resolve(
+                                    new Response(200, data, {
+                                        'Content-type': mime.contentType(ext) || 'text/plain'
+                                    })
+                                );
+                            }
+                        });
+                    });
+                });
+            }
+            catch(err)
+            {
+                console.error(err);
+            }
+        }
+
+        return response;
+    }
+
+    public async handleRoute(request: Request): Promise<Response | void>
+    {
+        let response: Response | void;
         let finded: boolean = false;
         const pathname = request.pathname;
+
         try
         {
             /* Route finder */
@@ -132,7 +167,7 @@ export default class HTTPServer {
                 }
             }
             
-            if(response.status.code == 404)
+            if(!response)
             {
                 throw new UnknownRouteError(pathname);
             }
@@ -144,11 +179,8 @@ export default class HTTPServer {
              */
             //console.log(err);
         }
-        finally
-        {
-            serverResponse.writeHead(response.status.code, response.status.text, response.headers);
-            serverResponse.end(response.content);
-        }
+
+        return response;
     }
 
     public listen()

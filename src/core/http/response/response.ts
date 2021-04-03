@@ -2,8 +2,8 @@ import StatusInterface from "../../interface/response/statusinterface";
 
 export default class Response
 {
-    public _headers: Array<any>;
-    protected _content: string;
+    public _headers: {[key: string]: string};
+    protected _content: Buffer;
     protected _version: string;
     protected _status: StatusInterface;
     protected _charset: string;
@@ -74,10 +74,10 @@ export default class Response
         {code: 511, text: 'Network Authentication Required'},     // RFC6585
     ];
 
-    constructor(statusCode: number = 200, content: string = '', headers: Array<any> = new Array())
+    constructor(statusCode: number = 200, content: string | Buffer = '', headers: {[key: string]: string} = {})
     {
         this.headers = headers;
-        this.content = content;
+        this.content = Buffer.from(content);
 
         /* Protocole version */
         this.version = "1.0";
@@ -116,22 +116,27 @@ export default class Response
         }
     }
 
-    set headers(headers: Array<any>)
+    public setHeader(key: string, value: string)
+    {
+        this._headers[key] = value;
+    }
+
+    set headers(headers: {[key: string]: string})
     {
         this._headers = headers;
     }
 
-    get headers(): Array<any>
+    get headers(): {[key: string]: string}
     {
         return this._headers;
     }
 
-    set content(content: string)
+    set content(content: Buffer)
     {
         this._content = content ?? '';
     }
 
-    get content(): string
+    get content(): Buffer
     {
         return this._content;
     }

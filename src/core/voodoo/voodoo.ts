@@ -13,8 +13,8 @@ export default class Voodoo
     private static _cleanupOutput: boolean = true;
     private static _scriptFilename: string = '[name].js';
     private static _styleFilename: string = '[name].css';
-    private static _plugins: Array<WebpackPluginInstance> = new Array();
-    private static _moduleRules: Array<Object>;
+    private static _plugins: Array<WebpackPluginInstance> = new Array<WebpackPluginInstance>();
+    private static _moduleRules: Array<Object> = new Array<Object>();
 
     static get entries(): EntriesInterface
     {
@@ -105,45 +105,67 @@ export default class Voodoo
         return plugins;
     }
 
-    public static addPlugin(plugin: any, rule: Object): Voodoo
+    public static addPlugin(plugin: any, rule?: Object): Voodoo
     {
-        Voodoo._plugins
+        Voodoo._plugins.push(plugin);
+
+        if(rule)
+        {
+            Voodoo._moduleRules.push(rule);
+        }
+
+        return this;
+    }
+
+    public static addModuleRule(rule: Object): Voodoo
+    {
+        Voodoo._moduleRules.push(rule);
+
         return this;
     }
 
     public static getWebpackConfig()
     {
+        Voodoo.addPlugin(new MiniCssExtractPlugin({filename: Voodoo._styleFilename}),
+        {
+            test: /\.(sa|sc|c)ss$/,
+            use: [
+                MiniCssExtractPlugin.loader,
+                'css-loader',
+                'postcss-loader',
+                'sass-loader',
+            ],
+        });
+
+        Voodoo.addPlugin(new CopyPlugin({
+            patterns: this._files
+        }));
+
+        Voodoo.addModuleRule({
+            test: /\.tsx?$/,
+            use: 'ts-loader',
+            exclude: /node_modules/,
+        });
+
+
+        
+
         return {
-            entry: this.entries,
+            entry: Voodoo._entries,
             devtool: 'inline-source-map',
             module: {
-                rules: [
-                    {
-                        test: /\.tsx?$/,
-                        use: 'ts-loader',
-                        exclude: /node_modules/,
-                    },
-                    {
-                        test: /\.(sa|sc|c)ss$/,
-                        use: [
-                            MiniCssExtractPlugin.loader,
-                            'css-loader',
-                            'postcss-loader',
-                            'sass-loader',
-                        ],
-                    },
-                ],
+                rules: Voodoo._moduleRules,
             },
             resolve: {
                 extensions: [ '.tsx', '.ts', '.js' ],
             },
             output: {
-              filename: this._scriptFilename,
-              path: path.resolve(process.cwd(), this._outputDir),
-              publicPath: this._publicPath,
-              clean: this._cleanupOutput,
+              filename: Voodoo._scriptFilename,
+              path: path.resolve(process.cwd(), Voodoo._outputDir),
+              publicPath: Voodoo._publicPath,
+              clean: Voodoo._cleanupOutput,
             },
-            plugins: this.getPlugins()
+            plugins: Voodoo._plugins
         }
     }
 }

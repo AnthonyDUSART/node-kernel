@@ -102,6 +102,7 @@ export default class HTTPServer {
                         {
                             if(err)
                             {
+                                console.error(err);
                                 reject(
                                     new Response(500, `Error getting the file: ${err}.`)
                                 );

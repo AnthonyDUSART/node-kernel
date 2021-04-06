@@ -1,33 +1,13 @@
-const path = require('path');
+const Voodoo = require('./build/core/voodoo/voodoo').default;
 
-module.exports = {
-    entry: './assets/app.ts',
-    devtool: 'inline-source-map',
-    module: {
-        rules: [
-            {
-                test: /\.tsx?$/,
-                use: 'ts-loader',
-                exclude: /node_modules/,
-            },
-            {
-                test: /\.s[ac]ss$/i,
-                use: [
-                    // Creates `style` nodes from JS strings
-                    "style-loader",
-                    // Translates CSS into CommonJS
-                    "css-loader",
-                    // Compiles Sass to CSS
-                    "sass-loader",
-                ],
-            },
-        ],
-    },
-    resolve: {
-        extensions: [ '.tsx', '.ts', '.js' ],
-    },
-    output: {
-      filename: 'bundle.js',
-      path: path.resolve(__dirname, 'public/build'),
-    },
-  };
+Voodoo
+    .setOutputDir('public/build')
+    .setPublicPath('/build')
+    .setScriptFilename('js/[name].[hash:8].js')
+    .setStyleFilename('css/[name].[hash:8].css')
+    .copyFiles('images', 'images/[path][name].[hash:8][ext]')
+    .copyFiles('favicon.ico', '[name][ext]')
+    .addEntry('app', './assets/app.ts')
+    .addEntry("caca", './assets/caca.ts');
+
+module.exports = [Voodoo.getWebpackConfig()];
